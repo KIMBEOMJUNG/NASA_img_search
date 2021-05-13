@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>NASA 이미지 검색기(21학년도 1학기 웹개발 스터디 결과물)</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <Link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <h1><span>B</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></h1>
+    <h3 style="text-align: center;" >NASA 이미지 검색기</h3>
+    <form action="https://www.google.com/search" method="GET">
+        <div class="mx-auto mt-5 search-bar">
+            <input name="q" id="word" class="search-bar" placeholder="검색해주세요."/>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <!-- <button class="btn btn-primary" onclick="listup();" type="button">검색</button> -->
+            <button class="btn btn-primary" onclick="listup2();" type="button">Search</button>
+        </div>
+    </form>
+    <div id="title" style="text-align: center; margin-top: 5%;">
+
+    </div>
+    <!-- 주석 -->
+
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        function listup(){
+            //alert("버튼동작 확인");
+
+            jQuery.ajax({
+                type:"GET",
+                url : "https://jsonplaceholder.typicode.com/posts",
+
+                success : function(data){
+                    console.log("data:"+data);
+                    for(i in data){
+                        console.log("내용:"+data[i].title);
+                        $("#title").append('유저아이디 : '+data[i].userId+' 내용 :'+data[i].title+' <button onclick="detail( \' '+data[i].title+' \' )">상세정보</button>  <br>');
+
+                    }
+                },
+                error : function(xhr, status, error){console.log("ajax error");}
+
+            });
+
+
+        }
+
+        function listup2(){
+            var word = $("#word").val();
+            console.log("검색어 :"+word);
+            $("#title").html("");
+            //alert("버튼동작 확인");
+
+            jQuery.ajax({
+                type:"GET",
+                url : "https://images-api.nasa.gov/search?q="+word,
+
+                success : function(datas){
+                    let resposeCount = datas.collection.items;
+
+                    console.log("data:"+resposeCount);
+                    for(var i=0; i<resposeCount.length; i++){
+                        if(datas.collection.items[i].hasOwnProperty('links') == true){
+                            $("#title").append(''+ datas.collection.items[i].data[0].title+' <br>');
+                            $("#title").append('<a href=" '+datas.collection.items[i].links[0].href +' ">사진링크</a> <br> ')
+                            $("#title").append('<img src=" '+datas.collection.items[i].links[0].href +' "/> <br>');
+                            $("#title").append('<div style="margin : 50px" ></div>');
+                        }
+                        
+                    }
+                },
+                error : function(xhr, status, error){console.log("ajax error");}
+
+            });
+
+
+        }
+
+
+
+
+
+        function detail(title){
+            alert("해당 유저 타이틀 : "+title);
+        }
+
+
+    </script>
+
+</body>
+
+
+
+</html>
